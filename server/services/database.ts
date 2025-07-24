@@ -1,5 +1,5 @@
-import { DataSource, type Entity, type EntityTarget } from 'typeorm'
-import Entities from '../entities'
+import { DataSource, type ObjectLiteral, type EntityTarget, type Repository } from 'typeorm'
+import Entities from '~~/server/entities'
 
 export default class Service {
   #data_source: DataSource
@@ -25,7 +25,7 @@ export default class Service {
     await this.#data_source.destroy()
   }
 
-  async getRepository (entity: EntityTarget<typeof Entity>) {
-    return this.dataSource().then((dataSource) => dataSource.getRepository(entity))
+  async getRepository<T extends ObjectLiteral> (entity: EntityTarget<T>): Promise<Repository<T>> {
+    return (await this.dataSource()).getRepository<T>(entity)
   }
 }
